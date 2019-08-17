@@ -22,3 +22,4 @@ I'm actually very, very satisfied with this project. No major bugs, and a lot of
 - adding modes (primarily 40-line sprint because it is my favourite :) )
 - using setInterval and changing everything to be in milliseconds instead of frames. This is tentative, because I think it allow for more flexibility in speed and prevent stuff from being tied to requestAnimationFrame frame rate (though most people use modern browsers at 60 hz) but given how the speed would be faster than the refresh rate, I don't know what effect it would have.
 - adding a small delay and annoucing the clear made (if special) for line clears, similar to puyo puyo tetris, or Tetris 99
+- doing mini-tpsin checks (i.e. tspin with wall kick)
