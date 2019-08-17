@@ -17,6 +17,8 @@ Over the summer, my sisters left for home earlier than I did. With them, the too
 - better graphics
 ## On what can be improved
 I'm actually very, very satisfied with this project. No major bugs, and a lot of features I wish to have are included. However, as with any project, improvements can certainly be made.
+- change Pieces.js to be pieces.js. I was in "Java mode" when I created the module name... Now it kind of infuriates me...
 - adding sound effects and music
 - adding modes (primarily 40-line sprint because it is my favourite :) )
 - using setInterval and changing everything to be in milliseconds instead of frames. This is tentative, because I think it allow for more flexibility in speed and prevent stuff from being tied to requestAnimationFrame frame rate (though most people use modern browsers at 60 hz) but given how the speed would be faster than the refresh rate, I don't know what effect it would have.
+- adding a small delay and annoucing the clear made (if special) for line clears, similar to puyo puyo tetris, or Tetris 99
