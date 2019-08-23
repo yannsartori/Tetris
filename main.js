@@ -1,5 +1,5 @@
 import {WIDTH, HEIGHT, LEFT, RIGHT, DOWN, drawTile, GRID_SIZE, RED, GREEN, ORANGE, YELLOW, BLUE, PURPLE, CYAN, createCookie, getCookie} from "./constants.js";
-import {IPiece, JPiece, Square, TPiece, SPiece, ZPiece, LPiece} from "./Pieces.js";
+import {IPiece, JPiece, Square, TPiece, SPiece, ZPiece, LPiece} from "./pieces.js";
 import {Grid, gridLeftOffset, gridTopOffset} from "./grid.js";
 /*TODO
 * add sprint mode
@@ -257,7 +257,7 @@ window.requestAnimationFrame(function callback() {
 let canvas = document.getElementById("main");
 let keyMapping = ["ArrowLeft", "ArrowRight", "ArrowDown", "ArrowUp", "z", "c", " ", "Escape"]; //default key mapping. Gets overriden by cookies if applicable
 let keyPressed = [null, null, null, null, null, null, null, null];
-let initialDelay = [10, [false, false]]; //[1] is just [left, right]
+let initialDelay = [10, [false, false, false, false, false, false, false]]; //[1] is just [left, right, down ...]
 let keyDownTimer = [1, 1, 1, 12, 12, 12, 12, 20]; //for pressing-and-holding
 let ogKeyDownTimer = [1, 1, 1, 12, 12, 12, 12, 20]; //the reference value for restting keyDownTimer
 let curTile = [[-1,-1],[-1, -1]]; //before after. Used for the pause menu. The "before after" is to allow for n-digit typing
@@ -265,10 +265,12 @@ canvas.addEventListener("keydown", function(event){
   let index = -1;
   if ((index = keyMapping.indexOf(event.key)) > -1) {
     keyPressed[index] = true;
-    if (index < 2 && !initialDelay[1][index]) { //instant movement
+    if (keyMapping[index] !== "ArrowDown" && !initialDelay[1][index]) { //instant movement
       performKeyAction(index);
       keyDownTimer[index] = initialDelay[0] + ogKeyDownTimer[index];
       initialDelay[1][index] = true; //shows that the press and hold is happening
+    } else if (keyMapping[index] === "ArrowDown")  {
+      performKeyAction(index);
     }
   }
   event.preventDefault();
@@ -277,9 +279,7 @@ canvas.addEventListener("keyup", (event) => {
   let index = -1;
   if ((index = keyMapping.indexOf(event.key)) > -1) {
     keyPressed[index] = false;
-    if (index < 2) {
-      initialDelay[1][index] = false;
-    }
+    initialDelay[1][index] = false;
   }
 });
 canvas.addEventListener("keydown", event => {
@@ -381,20 +381,20 @@ canvas.addEventListener("keydown", function(event) {
 });
 function performKeyAction(_index) {
   if (!pause[0]) {
-    if (keyPressed[0] || _index === 0 ) { //basically goes through keymapping... Chained ifs allow for simultaneous movements (e.g. translate and rotation)
-      if (keyDownTimer[0] <= 0) { 
+    if (keyPressed[0]) { //basically goes through keymapping... Chained ifs allow for simultaneous movements (e.g. translate and rotation)
+      if (keyDownTimer[0] <= 0 || _index === 0) { 
         curPiece.move(LEFT, grid.grid);
         curPiece.lastMove = "translate";
         keyDownTimer[0] = ogKeyDownTimer[0];
       }
-    } if (keyPressed[1] || _index === 1) {
-      if (keyDownTimer[1] <= 0) {
+    } if (keyPressed[1]) {
+      if (keyDownTimer[1] <= 0 || _index === 1) {
         curPiece.move(RIGHT, grid.grid);
         curPiece.lastMove = "translate";
         keyDownTimer[1] = ogKeyDownTimer[1];
       }
-    } if (keyPressed[2] || _index === 2) {
-      if (keyDownTimer[2] <= 0) {
+    } if (keyPressed[2]) {
+      if (keyDownTimer[2] <= 0 || _index === 2) {
         if (curPiece.move(DOWN, grid.grid)) { //allows for lock-in when soft dropping as well
           if (!lockedIn) {
             lockedIn = true;
@@ -407,33 +407,33 @@ function performKeyAction(_index) {
         keyDownTimer[2] = ogKeyDownTimer[2];
         autoDropDelay = determineAutoDropSpeed();
       }
-    } if (keyPressed[3] || _index === 3) {
-      if (keyDownTimer[3] <= 0) {
+    } if (keyPressed[3]) {
+      if (keyDownTimer[3] <= 0 || _index === 3) {
         curPiece.clockwiseRotate(grid.grid);
         curPiece.lastMove = "rotate";
         keyDownTimer[3] = ogKeyDownTimer[3];
       }
-    } if (keyPressed[4] || _index === 4) {
-      if (keyDownTimer[4] <= 0) {
+    } if (keyPressed[4]) {
+      if (keyDownTimer[4] <= 0 || _index === 4) {
         curPiece.counterClockwiseRotate(grid.grid);
         curPiece.lastMove = "rotate";
         keyDownTimer[4] = ogKeyDownTimer[4];
       }
-    } if (keyPressed[5] || _index === 5) { 
-      if (keyDownTimer[5] <= 0) {
+    } if (keyPressed[5]) { 
+      if (keyDownTimer[5] <= 0 || _index === 5) {
         keyDownTimer[5] = ogKeyDownTimer[5];
         holdPiece();
       }
-    } if (keyPressed[6] || _index === 6) {
-      if (keyDownTimer[6] <= 0) {
+    } if (keyPressed[6]) {
+      if (keyDownTimer[6] <= 0 || _index === 6) {
         curPiece.lastMove = "translate";
         hardDrop();
         keyDownTimer[6] = ogKeyDownTimer[6];
       }
     }
   }
-  if (keyPressed[7] || _index === 7) { //pause!
-    if (keyDownTimer[7] <= 0) {
+  if (keyPressed[7]) { //pause!
+    if (keyDownTimer[7] <= 0 || _index === 7) {
         keyDownTimer[7] = ogKeyDownTimer[7];
         if (pause[0] && (pause[1] || pause[2])) { //we are on a pause-screen. Go back to "home screen" of pause
           pause[1] = false; pause[2] = false;
